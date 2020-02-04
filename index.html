@@ -1,1 +1,178 @@
-Hello world
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Beers</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <link rel="stylesheet" href="./css/styles.css"/>
+    <link href="./css/nouislider.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="css/spin.css">
+    <link rel="stylesheet" href="css/bootstrap-duallistbox.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="icon" type="image/x-icon" href="beer-64-icon.png">
+    <title>Beers</title>
+</head>
+<body class="">
+
+
+<div class="container-fluid">
+    <div class="row pr-5 pl-5">
+        <div id="about" class="col-12">
+            <h1>Beers</h1>
+            <div id="text" style="  text-align: justify;
+                                    text-justify: inter-word;">
+                <p>
+                    The purpose of this site is to help beer aficionados find the perfect country to travel in order to
+                    drink the beer they like.
+                    It is possible to see which country produces the best beer (the redder it is on the map, the better
+                    are the beer it produces) and to filter
+                    according to one's own taste (alcohol level and beer style).
+                </p>
+                <p>
+                    When you click on a country, the 10 best beers made by this one are shown on the right with several
+                    informations such as the brewery that produces
+                    this gold nectar(might also be brown, we are not here to judge). The beers are already sorted for
+                    you, with the best ranked ale on the top 😉.
+                    You can click on a specific beer in order to get deeper informations about it.
+                    These informations appear under the map.
+                </p>
+                <p>
+                    On the left you will find the average score for other attributes of the beer such as the taste or
+                    the smell.<br>
+                    Maybe the country producing the beer you have selected is not producing the best Imperial Stout of
+                    the world? <br>
+                    We have you covered since on the middle are displayed the top 10 beers of the world from the same
+                    category of beers as the selected one.<br>
+                    Maybe you really like this beverage but you want to know how well it ranks among the other beers
+                    from this category?
+                    No problemo, you can easily see whether this delicious brew is amongst the top 5%, 10% or something.
+                </p>
+
+                <p>
+                    The data used for this site comes from the Kaggle dataset available at this address : <a
+                        href="https://www.kaggle.com/ehallmar/beers-breweries-and-beer-reviews/data">https://www.kaggle.com/ehallmar/beers-breweries-and-beer-reviews/data</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row pr-5 pl-5 pb-3">
+    <div class="col-12">
+        <label class="labels" for="alcohol">Search a specific beer</label>
+        <br>
+        <input type="text" onfocus="this.select();" id="searchInput" class="form-control" placeholder="Search.."
+               autocomplete="off">
+    </div>
+</div>
+
+
+<div class="row pr-5 pl-5">
+    <div id="tools">
+        <div class="col-12">
+            <p>
+                <label class="labels" for="alcohol">Alcohol range:</label>
+                <input type="text" id="alcoholRange" readonly style="border:0; color:#f6931f; font-weight:bold;">
+            </p>
+            <div id="slider">
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+<div class="row pr-5 pl-5 pb-3">
+    <div id="style" class="col-12">
+        <label class="labels" for="pickerStyle">Select Beer style : </label><br>
+        <div class="form-group">
+
+            <select id="multipleSelect" multiple="multiple" size="10" name="duallistbox">
+
+            </select>
+        </div>
+
+    </div>
+</div>
+<div class="row pr-5 pl-5 ">
+    <div class="overflow-auto col-xl-3 col-lg-4 col-md-5" id="countryDiv">
+        <div class="mb-3">
+            <label class="labels" for="country">Search a specific country</label>
+            <br>
+            <input type="text" id="searchCountry" onfocus="this.select();" class="form-control" placeholder="Country">
+        </div>
+        <table class="table table-striped table-wrapper-scroll-y my-custom-scrollbar">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Country</th>
+                <th scope="col">Average Score</th>
+            </tr>
+            </thead>
+            <tbody id="countries" class="">
+            </tbody>
+        </table>
+    </div>
+    <div id="map" class="col-xl-6 col-lg-8 col-md-7"></div>
+    <div id="beers" class="overflow-auto col-xl-3 col-lg-12">
+
+    </div>
+</div>
+<div class="pr-5 pl-5 pt-5">
+    <div id="beerStats" class="row">
+
+    </div>
+</div>
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.0"></script>
+
+<script src="javascript/libs/jquery.bootstrap-duallistbox.min.js"></script>
+<script src="javascript/libs/bootstrap-select.min.js"></script>
+<script src="javascript/libs/spin.js"></script>
+<script src="javascript/libs/leaflet.spin.min.js"></script>
+<script src="javascript/libs/wNumb.min.js"></script>
+<script src="javascript/libs/nouislider.min.js"></script>
+<script src="javascript/libs/isoConverter.js"></script>
+
+<script src="./javascript/globals.js"></script>
+<script src="./javascript/map.js"></script>
+<script src="./javascript/queries.js"></script>
+<script src="./javascript/controls.js"></script>
+
+
+<script>
+
+    $(window).on("load", function () {
+        createMap();
+        createSlider();
+        createPicker();
+        createSearch();
+        createSearchCountry();
+    });
+</script>
+</body>
+
+</html>
